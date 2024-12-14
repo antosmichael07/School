@@ -17,7 +17,7 @@ function loop() {
             game.update();
         }
 
-        clearBackground("white");
+        clearBackground("skyblue");
 
         game.draw();
 
