@@ -24,6 +24,8 @@ let userIDO = null;
 let currentPlayer = 'X';
 let playing = false;
 let ended = false;
+let winData = null;
+let lastMove = null;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -46,6 +48,7 @@ function checkWin(data) {
                 out.x = i;
                 out.y = y;
                 io.emit('win', out);
+                winData = out;
                 return true;
             };
         } else {
@@ -64,6 +67,7 @@ function checkWin(data) {
                 out.x = x;
                 out.y = i;
                 io.emit('win', out);
+                winData = out;
                 return true;
             };
         } else {
@@ -84,6 +88,7 @@ function checkWin(data) {
                 out.x = xi;
                 out.y = yi;
                 io.emit('win', out);
+                winData = out;
                 return true;
             };
         } else {
@@ -104,6 +109,7 @@ function checkWin(data) {
                 out.x = xi;
                 out.y = yi;
                 io.emit('win', out);
+                winData = out;
                 return true;
             };
         } else {
@@ -193,6 +199,7 @@ io.on('connection', (socket) => {
                     board[data.x][data.y] = data.symbol;
                     console.log(`Player 'X' drew at [${data.x}; ${data.y}]`);
                     io.emit('drawSymbol', data);
+                    lastMove = data;
                     if (checkWin(data)) {
                         ended = true;
                         console.log(`Player '${data.symbol}' wins the game!`);
@@ -209,6 +216,7 @@ io.on('connection', (socket) => {
                     board[data.x][data.y] = data.symbol;
                     console.log(`Player 'O' drew at [${data.x}; ${data.y}]`);
                     io.emit('drawSymbol', data);
+                    lastMove = data;
                     if (checkWin(data)) {
                         ended = true;
                         console.log(`Player '${data.symbol}' wins the game!`);
@@ -228,6 +236,12 @@ io.on('connection', (socket) => {
         tileSize: tileSize,
         board: board
     });
+    if (playing && lastMove !== null) {
+        socket.emit('drawSymbol', lastMove);
+    }
+    if (ended && winData !== null) {
+        socket.emit('win', winData);
+    }
 });
 
 server.listen(PORT, () => {
