@@ -105,7 +105,7 @@ socket.on('win', (data) => {
     }
 });
 
-document.addEventListener('click', (e) => {
+canvas.addEventListener('click', (e) => {
     socket.emit('click', {
         x: Math.floor(e.offsetX / tileSize),
         y: Math.floor(e.offsetY / tileSize)
