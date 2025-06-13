@@ -10,7 +10,8 @@ let thisPlayer = ' ';
 let lastMove;
 let tileCount;
 let tileSize;
-let fontSize;
+let symbolSize;
+let symbolOffset;
 const tileBorderColor = '#aaa';
 const tileColor = '#fff';
 const tileColorHighlighted = '#ff0';
@@ -27,24 +28,35 @@ function drawBackground() {
     }
 }
 
+function drawO(x, y) {
+    c.strokeStyle = 'blue';
+    c.lineWidth = 4;
+    c.beginPath();
+    c.arc(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, symbolSize / 2, 0, Math.PI * 2);
+    c.stroke();
+}
+
+function drawX(x, y) {
+    c.strokeStyle = 'red';
+    c.lineWidth = 4;
+    c.beginPath();
+    c.moveTo(x * tileSize + symbolOffset, y * tileSize + symbolOffset);
+    c.lineTo((x + 1) * tileSize - symbolOffset, (y + 1) * tileSize - symbolOffset);
+    c.moveTo((x + 1) * tileSize - symbolOffset, y * tileSize + symbolOffset);
+    c.lineTo(x * tileSize + symbolOffset, (y + 1) * tileSize - symbolOffset);
+    c.stroke();
+}
+
 function drawSymbol(x, y, symbol) {
     if (lastMove !== null) {
         c.fillStyle = tileColor;
         c.fillRect(lastMove.x * tileSize + 1, lastMove.y * tileSize + 1, tileSize - 2, tileSize - 2);
-        c.fillStyle = lastMove.symbol === 'X' ? 'red' : 'blue';
-        c.font = `${fontSize}px Arial`;
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.fillText(lastMove.symbol, lastMove.x * tileSize + tileSize / 2, lastMove.y * tileSize + tileSize / 2);
+        lastMove.symbol === 'X' ? drawX(lastMove.x, lastMove.y) : drawO(lastMove.x, lastMove.y);
     }
 
     c.fillStyle = tileColorHighlighted;
     c.fillRect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2);
-    c.fillStyle = symbol === 'X' ? 'red' : 'blue';
-    c.font = `${fontSize}px Arial`;
-    c.textAlign = 'center';
-    c.textBaseline = 'middle';
-    c.fillText(symbol, x * tileSize + tileSize / 2, y * tileSize + tileSize / 2);
+    symbol === 'X' ? drawX(x, y) : drawO(x, y);
 
     lastMove = {x: x, y: y, symbol: symbol};
 }
@@ -52,7 +64,8 @@ function drawSymbol(x, y, symbol) {
 socket.on('initialData', (data) => {
     tileCount = data.tileCount;
     tileSize = data.tileSize;
-    fontSize = Math.ceil(tileSize * .75);
+    symbolSize = Math.ceil(tileSize * .75);
+    symbolOffset = (tileSize - symbolSize) / 2;
     lastMove = null;
 
     canvas.width = tileCount * tileSize;
@@ -97,11 +110,7 @@ socket.on('win', (data) => {
 
         c.fillStyle = tileColorHighlighted;
         c.fillRect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2);
-        c.fillStyle = data.symbol === 'X' ? 'red' : 'blue';
-        c.font = `${fontSize}px Arial`;
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.fillText(data.symbol, x * tileSize + tileSize / 2, y * tileSize + tileSize / 2);
+        data.symbol === 'X' ? drawX(x, y) : drawO(x, y);
     }
 });
 
