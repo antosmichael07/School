@@ -4,6 +4,7 @@ const canvas = document.getElementById('canvas');
 const c = canvas.getContext('2d');
 
 const info = document.getElementById('info');
+const playerInfo = document.getElementById('playerInfo');
 const modalGameFull = new bootstrap.Modal(document.getElementById('gameFullModal'));
 
 let thisPlayer = ' ';
@@ -83,10 +84,12 @@ socket.on('initialData', (data) => {
 
 socket.on('player', (player) => {
     thisPlayer = player;
+    playerInfo.innerHTML = `You are player '${thisPlayer}'`;
 });
 
 socket.on('gameFull', () => {
     modalGameFull.show();
+    playerInfo.innerHTML = 'You are a spectator';
 });
 
 socket.on('drawSymbol', (data) => {
