@@ -75,3 +75,18 @@ Použijte vhodné moduly v Pythonu (včetně jejich případné instalace) k tom
 K řešení prvního úkolu je možné doporučit importovat interní modul datetime
 Řešení dalších dvou úkolů můžete odvodit z příkladů v dokumentaci k externímu modulu dateutil - viz https://pypi.org/project/python-dateutil/
 """
+
+from datetime import datetime
+
+now = datetime.now()
+print(f"Ted je: {datetime.strftime(datetime.now(), "%d.%m.%Y, %H:%M:%S")}")
+
+from dateutil.easter import *
+
+for i in range(1, 6):
+    date = easter(now.year + i, EASTER_WESTERN)
+    print(f"Velikonoce za {i} let: {date.day}.{date.month}.")
+
+from dateutil.rrule import *
+
+print(f"Stedry den v nedeli: {rrule(YEARLY,dtstart=now,bymonth=12,bymonthday=24,byweekday=SU)[0].year}")
