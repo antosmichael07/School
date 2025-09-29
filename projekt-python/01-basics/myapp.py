@@ -77,11 +77,17 @@ while not win:
     switch_players()
     print_field()
 
-    x = int(input("X coordinate: "))
-    y = int(input("Y coordinate: "))
+    while True:
+        x = int(input("X coordinate: "))
+        y = int(input("Y coordinate: "))
 
-    if field[x][y] ==  " ":
-        field[x][y] = turn
+        if x > 2 or y > 2:
+            print("Invalid move, keep it in the field")
+        elif field[x][y] ==  " ":
+            field[x][y] = turn
+            break
+        else:
+            print("Invalid move, don't overwrite someone's symbol")
 
     check_win()
 
