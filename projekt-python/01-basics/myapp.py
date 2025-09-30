@@ -4,6 +4,7 @@ field = [
     [" ", " ", " "]
 ]
 
+turns = 0
 turn = "O"
 win = False
 
@@ -12,7 +13,9 @@ def print_field():
     print("   +---+---+---+")
     print(f" 0 | {field[0][0]} | {field[1][0]} | {field[2][0]} |")
     print("   +---+---+---+")
-    if not win:
+    if turns == 10:
+        print(f" 1 | {field[0][1]} | {field[1][1]} | {field[2][1]} |   It's a draw!")
+    elif not win:
         print(f" 1 | {field[0][1]} | {field[1][1]} | {field[2][1]} |   Player {turn} is playing...")
     else:
         print(f" 1 | {field[0][1]} | {field[1][1]} | {field[2][1]} |   Player {turn} won!")
@@ -74,6 +77,10 @@ def check_win():
 # --------------- Start --------------- #
 
 while not win:
+    turns += 1
+    if turns == 10:
+        break
+
     switch_players()
     print_field()
 
