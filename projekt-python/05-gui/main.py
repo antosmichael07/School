@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.simpledialog as sd
+import tkinter.colorchooser as cc
 import random
 
 class App:
@@ -25,7 +27,7 @@ class App:
 
         m_graphics = tk.Menu(menubar, tearoff=False)
         m_graphics.add_command(label="Magické čáry", command=lambda: self.magic_barcode(5, 20))
-        m_graphics.add_command(label="Šachovnice", command=lambda: self.set_bg("green"))
+        m_graphics.add_command(label="Šachovnice", command=lambda: self.chessboard_dialog())
         m_graphics.add_command(label="Terč", command=lambda: self.set_bg("blue"))
         menubar.add_cascade(label="Graphics", menu=m_graphics)
 
@@ -45,6 +47,26 @@ class App:
             w = random.randrange(min, max, 2)
             self.canvas.create_line(x + w/2, 0, x + w/2, height, fill="#"+("%06x"%random.randint(0,16777215)), width=w)
             x += w
+
+    def chessboard(self, size: int, light: str = "white", dark: str = "black") -> None:
+        self.clear()
+        self.canvas.config(bg=light)
+
+        width, height = self._canvas_size()
+
+        tile_width = width / size
+        tile_height = height / size
+
+        for y in range(size):
+            for x in range(size):
+                if (x + y) % 2 == 0:
+                    self.canvas.create_rectangle(x * tile_width, y * tile_height, (x + 1) * tile_width, (y + 1) * tile_height, fill=dark, outline="")
+
+    def chessboard_dialog(self) -> None:
+        size = sd.askinteger(title="Šachovnice", prompt="Zadej počet polí", minvalue=2, maxvalue=20, initialvalue=8, parent=self.root)
+        light = cc.askcolor(title="Vyber pozadí")[1]
+        dark = cc.askcolor(title="Vyber barvu")[1]
+        self.chessboard(size=size, light=light, dark=dark)
 
     def set_bg(self, color: str) -> None:
         self.canvas.config(bg=color)
