@@ -158,3 +158,61 @@ funkční kód, tím lepší).
 3. Vytvořte funkci, která vygeneruje náhodná hesla pro počet osob zadaný v parametru tak, aby heslo začínalo
    3 velkými písmeny, pokračovalo 3 malými písmeny, jedním speciálním znakem (-/+*) a končilo 3 náhodnými číslicemi.
 '''
+
+import re
+import unicodedata
+import secrets
+import string
+
+def czech_date_to_iso(s: str) -> str:
+    nums = re.findall(r'\d+', s)
+
+    if len(nums) != 3:
+        print("Očekáván formát data jako 'dd. mm. yyyy'.")
+        return ""
+
+    return f"{int(nums[2]):04d}-{int(nums[1]):02d}-{int(nums[0]):02d}"
+
+def make_identifier(phrase: str, style: str = "snake") -> str:
+    text_ascii = unicodedata.normalize("NFKD", phrase).encode("ascii", "ignore").decode("ascii")
+
+    words = re.findall(r"[A-Za-z0-9]+", text_ascii)
+
+    if not words:
+        print("Žádná platná slova nebyla nalezena.")
+        return ""
+    if style == "snake":
+        formatted = "_".join(w.lower() for w in words)
+    elif style == "camel":
+        formatted = words[0].lower() + "".join(w.lower().capitalize() for w in words[1:])
+    else:
+        print("style musí být 'snake' nebo 'camel'")
+        return ""
+
+    return "_" + formatted if formatted[0].isdigit() else formatted
+
+def generate_passwords(count: int):
+    passwords = []
+
+    specials = string.punctuation
+    up = string.ascii_uppercase
+    low = string.ascii_lowercase
+    digs = string.digits
+
+    for _ in range(count):
+        password = ""
+        for _ in range(3):
+            password += secrets.choice(up)
+        for _ in range(3):
+            password += secrets.choice(low)
+        password += secrets.choice(specials)
+        for _ in range(3):
+            password += secrets.choice(digs)
+        passwords.append(password)
+
+    return passwords
+
+print(czech_date_to_iso("12. 10. 2020"))
+print(make_identifier("Lojza Zakopl", "snake"))
+print(make_identifier("Marek Tonezvlád", "camel"))
+print(generate_passwords(5))
