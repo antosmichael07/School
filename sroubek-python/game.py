@@ -74,7 +74,7 @@ class Game:
         pg.display.flip()
     
     def draw_end(self):
-        self.screen.fill((0, 180, 180))
+        self.screen.fill((0, 0, 0))
 
         font = pg.font.SysFont("Comic Sans", 50)
         text = font.render("Game Over", True, (255, 0, 0))
@@ -82,18 +82,18 @@ class Game:
         self.screen.blit(text, text_rect)
 
         font = pg.font.SysFont("Comic Sans", 30)
-        text = font.render(f"Your time: {self.timer:.2f}s", True, (0, 0, 0))
+        text = font.render(f"Your time: {self.timer:.2f}s", True, (255, 255, 255))
         text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
         self.screen.blit(text, text_rect)
 
         if self.timer > self.best_time:
             font = pg.font.SysFont("Comic Sans", 30)
-            text = font.render("NEW RECORD !!", True, (50, 255, 0))
+            text = font.render("NEW RECORD !!", True, (0, 255, 0))
             text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 100))
             self.screen.blit(text, text_rect)
         else:
             font = pg.font.SysFont("Comic Sans", 30)
-            text = font.render(f"Best time: {self.best_time:.2f}s", True, (0, 0, 0))
+            text = font.render(f"Best time: {self.best_time:.2f}s", True, (255, 255, 255))
             text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 100))
             self.screen.blit(text, text_rect)
 
